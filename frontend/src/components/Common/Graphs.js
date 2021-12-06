@@ -1,4 +1,4 @@
-import React, { Component, auto , useState} from 'react';
+import React, { Component, auto, useState } from 'react';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css"
 import Button from '@mui/material/Button';
@@ -49,25 +49,40 @@ export default class Home extends Component {
     super(props);
     // this.data = [];
   }
-  
+
 
   componentDidMount() {
-    function filter_data(ts, mode){
+    function filter_data(ts, months,days,hours) {
+
+      var total_minutes  = months*30*24*60 + days*24*60 + hours*60;
       var today = new Date();
       var dd = today.getDate();
-      var mm = today.getMonth()  //January is 0!
+      var mm = today.getMonth()+1  //January is 0!
       var yyyy = today.getFullYear();
+      var hh =today.getHours();
 
-      // today = dd + '/' + mm + '/' + yyyy;
-      console.log(dd);
-      console.log(mm);
-      console.log(yyyy);
-      // today = yyyy+ mm + dd;
 
-      // console.log(today);
-      if(mode == 0)
+      var y = parseInt(ts[0] + ts[1] + ts[2] + ts[3]);
+      var m = parseInt(ts[4] + ts[5]);
+      var d = parseInt(ts[6] + ts[7]);
+      var h= parseInt(ts[9] + ts[10]);
+      var min = parseInt(ts[11]+ ts[12]);
+
+      yyyy-=y;
+      mm-=m;
+      dd-=d;
+      hh-=h;
+
+      var minutes_passed = yyyy*12*30*24*60 + mm*30*24*60 + dd*24*60 + hh*60;
+
+      console.log(total_minutes,minutes_passed)
+      if(minutes_passed < total_minutes)
       {
-
+        let ret = String(d) + "/" + String(m) + "/" + String(y) + " " + String(h) + ":" +String(min);
+        return ret;
+      }
+      else{
+        return "-1";
       }
     }
 
@@ -76,55 +91,25 @@ export default class Home extends Component {
       .then(res => {
         let data2 = [];
         let array = res.data["m2m:cnt"]["m2m:cin"];
-        
+
         // console.log(array);
 
         for (let i = 0; i < array.length; i++) {
-          // let timestring = array[i].
-
           let data = array[i].con;
-          // console.log();
-          // let data = "/EF;2/";
-          // console.log(data);
-          // data = data.substring(1, data.length-1);
           data = data.split(';');
-          // console.log(data[0]+data[1]);
-          let hboi = hash(data[0]+data[1], 23);
-          // console.log(hboi);
+          let hboi = hash(data[0] + data[1], 23);
           let lvl = 0;
-        // if(hboi == data[2])
-        // {
-            lvl = parseInt(Number("0x"+data[0]), 10);
-            // console.log(parseInt(Number("0x"+data[0]), 10));
-            // console.log(this.x);
-            
-            // if(data[1] == "1")
-            //     this.y = this.y + "Off";
-            // else 
-            //     this.y = this.y + "Running";
-            // this.setState({x:"hmm"});
-        // }
-        // else 
-          // console.log("lmao")
-
-
-
+          lvl = parseInt(Number("0x" + data[0]), 10);
 
           let ts = array[i].ct;
-          let timev = filter_data(ts,0);
-          // let timev = ts[9] + ts[10] + ":" + ts[11] + ts[12] + ":" + ts[13] + ts[14];
+          let timev = filter_data(ts, 1,1,1);
           let value = { name: timev, uv: lvl };
-          if(timev !== "-1")
-          {
+          if (timev !== "-1") {
             data2.push(value);
           }
         }
-
-        // console.log(data2);
         this.data = data2;
-        this.setState({data : data2})
-        // console.log("out",this.data)
-
+        this.setState({ data: data2 })
       })
       ;
   }
