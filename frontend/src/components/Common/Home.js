@@ -26,16 +26,30 @@ const styles = {
 };
 let y = "Status of Motor: ";
 let x = "Water level in tank: ";
-let resultx = 1;
-let level = 150; 
+let resultx = 0;
+let level = 100; 
 let total = 200; 
+
+// function hash(s, M) {
+//     let sum = 0, mul = 1;
+//     for (let i = 0; i < s.length; i++) {
+//     //   mul = (i % 4 == 0) ? 1 : mul * 256;
+//         console.log(sum);
+//         console.log(s.charCodeAt(i));
+//       sum += s.charAt(i) * mul;
+//       console.log(sum);
+//     }
+//     console.log(Math.abs(sum) % M);
+//     return (Math.abs(sum) % M);
+//   }
 
 function hash(s, M) {
     let sum = 0, mul = 1;
-    for (let i = 0; i < s.length(); i++) {
-    //   mul = (i % 4 == 0) ? 1 : mul * 256;
-      sum += s.charAt(i) * mul;
+    for (let i = 0; i < s.length; i++) {
+      mul = (i % 4 == 0) ? 1 : mul * 256;
+      sum += s.charCodeAt(i) * mul;
     }
+    // console.log(sum);
     return (Math.abs(sum) % M);
   }
 
@@ -54,21 +68,48 @@ export default class Home extends Component {
     componentDidMount() {
 
       
-        axios.get('http://esw-onem2m.iiit.ac.in:443/~/in-cse/in-name/Team-12/Node-1/Data/la', {
-            headers: {
-              'X-M2M-Origin': 'DLVosnfNhb:8FHrMl@3TX',
-            //   'Accept':'application/json',
-            //   'Access-Control-Allow-Origin': '*'
-            }
+        axios.get('http://localhost:4000/test', {
           })
                     .then(res => {
-                        // resolve(res);
-                        // res.header("Access-Control-Allow-Origin", "*");
-                        console.log("hi")
-                        console.log(res)
+                        let data = res.data["m2m:cin"].con;
+                        console.log(res);
+                        // let data = "/EF;2/";
+                        // console.log(data);
+                        // data = data.substring(1, data.length-1);
+                        data = data.split(';');
+                        // console.log(data[0]+data[1]);
+                        let hboi = hash(data[0]+data[1], 23);
+                        console.log(hboi);
+                        if(hboi == data[2])
+                        {
+                            this.x = this.x + parseInt(Number("0x"+data[0]), 10);
+                            // console.log(parseInt(Number("0x"+data[0]), 10));
+                            // console.log(this.x);
+                            
+                            if(data[1] == "1")
+                                this.y = this.y + "Off";
+                            else
+                                this.y = this.y + "Running";
+                            this.setState({x:"hmm"});
+                        }
 
-                        // let data = res.data."m2m:cin";
-                       ;
+                    //   if(res.data==='Success')
+                    //   {
+                    //     // ReactDOM.render(<UserApp/>,document.getElementById("root"));
+                    //     // UserProfile.setName(email.value);
+                    //     // const newSession = {
+                    //     //   email: email.value
+                    //     // }
+                    //     // const newLink = {
+                    //     //   pathname: "/users/userprofile",
+                    //     //   name: email.value
+                    //     // };
+                        
+                    //     // ReactDOM.render(<Link to={newLink}> hi </Link>, document.getElementById("root"));
+                        
+                    //   }
+                    //   else
+                    //     alert( res.data);console.log(res.data);
                     })
                     ;
         }
@@ -136,7 +177,7 @@ export default class Home extends Component {
                         return (
                             <tspan>
                                 <tspan className="value" style={valueStyle}>{value}</tspan>
-                                <tspan style={percentStyle}>{props.percent}</tspan>
+                                <tspan style={percentStyle}>kvein{} </tspan>
                             </tspan>
                         );
                     }}
