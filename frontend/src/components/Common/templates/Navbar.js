@@ -22,10 +22,16 @@ export default class UserNavbar extends Component {
                                 <Link to="/" className="nav-link">Dashboard</Link>
                             </li>
                             <li className="navbar-item">
-                                <Link to="/graphs" className="nav-link">Graphs</Link>
+                                <Link to="/graphs" className="nav-link">Water Level</Link>
                             </li>
                             <li className="navbar-item">
-                                <Link to="/graph2" className="nav-link">Cute</Link>
+                                <Link to="/motor" className="nav-link">Motor Level</Link>
+                            </li>
+                            <li className="navbar-item">
+                                <Link to="/graph2" className="nav-link">Water Usage</Link>
+                            </li>
+                            <li className="navbar-item">
+                                <Link to="/stats" className="nav-link">Statistics</Link>
                             </li>
                         </ul>
                     </div>

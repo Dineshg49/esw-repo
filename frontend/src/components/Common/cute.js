@@ -1,7 +1,7 @@
 import React, { Component, auto, useState } from 'react';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+// import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css"
-import Button from '@mui/material/Button';
+// import Button from '@mui/material/Button';
 import {Paper, TextField} from '@mui/material';
 import axios from 'axios';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis } from 'recharts';
@@ -161,38 +161,72 @@ export default class Home extends Component {
 
           let ts = array[i].ct;
           let timev;
-          let flag = check(curr_time,ts, parseInt(this.state.textFieldValue),0,0);
-          if(flag == 0)
+          if(this.state.duration == "1")
           {
-            let timec = gettim(ts);
-            grapharray.push({name: sum, uv: timec }); // push the time also 
-            sum = 0;
-            curr_time -= interval(parseInt(this.state.textFieldValue),0,0);
+            let flag = check(curr_time,ts, parseInt(this.state.textFieldValue),0,0);
+            if(flag == 0)
+            {
+              let timec = gettim(ts);
+              grapharray.push({name: sum, uv: timec }); // push the time also 
+              sum = 0;
+              curr_time -= interval(parseInt(this.state.textFieldValue),0,0);
+            }
+            let status_i = 0; // off
+            let status_i_minus_1 = 1; // on
+  
+            if(status_i & status_i_minus_1)
+            {
+              sum+= velocity_of_water*interva;
+            }
+            else if(status_i ^ status_i_minus_1)
+            {
+              sum+= (velocity_of_water*interva)/2;
+            }
           }
-          let status_i = 0; // off
-          let status_i_minus_1 = 1; // on
-
-          if(status_i & status_i_minus_1)
+          else if(this.state.duration == "2")
           {
-            sum+= velocity_of_water*interva;
+            let flag = check(curr_time,ts, 0,parseInt(this.state.textFieldValue),0);
+            if(flag == 0)
+            {
+              let timec = gettim(ts);
+              grapharray.push({name: sum, uv: timec }); // push the time also 
+              sum = 0;
+              curr_time -= interval(0,parseInt(this.state.textFieldValue),0);
+            }
+            let status_i = 0; // off
+            let status_i_minus_1 = 1; // on
+  
+            if(status_i & status_i_minus_1)
+            {
+              sum+= velocity_of_water*interva;
+            }
+            else if(status_i ^ status_i_minus_1)
+            {
+              sum+= (velocity_of_water*interva)/2;
+            }
           }
-          else if(status_i ^ status_i_minus_1)
+          else
           {
-            sum+= (velocity_of_water*interva)/2;
+            let flag = check(curr_time,ts, 0,0,parseInt(this.state.textFieldValue));
+            if(flag == 0)
+            {
+              let timec = gettim(ts);
+              grapharray.push({name: sum, uv: timec }); // push the time also 
+              sum = 0;
+              curr_time -= interval(0,0,parseInt(this.state.textFieldValue));
+            }
+            let status_i = 0; // off
+            let status_i_minus_1 = 1; // on
+  
+            if(status_i & status_i_minus_1)
+            {
+              sum+= velocity_of_water*interva;
+            }
+            else if(status_i ^ status_i_minus_1)
+            {
+              sum+= (velocity_of_water*interva)/2;
+            }
           }
-
-          // add the value of the current interval to the sum
-
-          // if(this.state.duration == "1")
-          //   timev = filter_data(sum,ts, parseInt(this.state.textFieldValue),0,0);
-          // if(this.state.duration == "2")
-          //   timev = filter_data(sum,ts, 0, parseInt(this.state.textFieldValue),0);
-          // if(this.state.duration == "3")
-          //   timev = filter_data(sum,ts, 0,0,parseInt(this.state.textFieldValue));
-          // let value = { name: timev, uv: lvl };
-          // if (timev !== "-1") {
-          //   data2.push(value);
-          // }
         }
         this.data = data2;
         this.setState({ data: data2 })

@@ -6,7 +6,7 @@ import {Paper, TextField} from '@mui/material';
 import axios from 'axios';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis } from 'recharts';
 // const data = [{ name: 'kveinop', uv: 400 }, { name: '13-2-21', uv: 200 }, { name: '14-2-21', uv: 500 }, { name: '12-2-21', uv: 600 }, { name: '12-2-21', uv: 200 },];
-let data = [];
+
 const styles = {
   display: "flex",
   justifyContent: "center",
@@ -30,6 +30,11 @@ const headerStyles = {
 };
 
 // const [dataop, setdataop] = useState([]);
+let decrypt = [
+  {'u': 0, 'x': 1, 'r': 2, 'p': 3, 'c': 4, 't': 5, 'z': 6, 'v': 7, 'd': 8, 'k': 9, 'h': -1},
+  {'n': 0, 'h': 1, 'e': 2, 'u': 3, 'v': 4, 'y': 5, 'z': 6, 'a': 7, 'p': 8, 'x': 9, 'j': -1},
+  {'g': 0, 's': 1, 'c': 2, 'a': 3, 'j': 4, 'i': 5, 'q': 6, 'v': 7, 'd': 8, 'f': 9, 'k': -1}
+]
 
 function hash(s, M) {
   let sum = 0, mul = 1;
@@ -101,9 +106,26 @@ export default class Home extends Component {
         for (let i = 0; i < array.length; i++) {
           let data = array[i].con;
           data = data.split(';');
-          let hboi = hash(data[0] + data[1], 23);
-          let lvl = 0;
-          lvl = parseInt(Number("0x" + data[0]), 10);
+          let water = 0;
+          let motor = decrypt[data[3]][[data[1][0]]];
+          // motor = motor-1;
+          for(let i=0; i<data[0].length; i++)
+            if(decrypt[data[3]][[data[0][i]]] != -1)
+            {
+              water = water*10;
+              water = water + decrypt[data[3]][[data[0][i]]]
+              // console.log(decrypt[data[3]][[data[0][i]]]);
+              // console.log(data[0]);
+            }
+          console.log("got", water.toString() + motor.toString());
+          let hboi = hash(water.toString() + motor.toString(), 50);
+          console.log(hboi, data);
+          if(hboi == data[2])
+            console.log("yee");
+          // else
+          //   console.log("f")
+          let lvl = water;
+          // lvl = parseInt(Number("0x" + data[0]), 10);
 
           let ts = array[i].ct;
           let timev;
@@ -144,6 +166,7 @@ export default class Home extends Component {
 
   render() {
     // console.log(this.state.duration, this.state.textFieldValue)
+    // console.log("lol", decrypt[2]['j']);
     return (
       <div>
         <Paper style={headerStyles}>

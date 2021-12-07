@@ -5,6 +5,8 @@ import Home from './components/Common/Home'
 import Navbar from './components/Common/templates/Navbar'
 import Graphs from './components/Common/Graphs'
 import cute from './components/Common/cute'
+import motor from './components/Common/motorLevel'
+import stats from './components/Common/stats'
 
 function App() {
   return (
@@ -13,7 +15,9 @@ function App() {
         <Route path="/" component={Navbar}/>
         <Route exact path="/" exact component={Home}/>
         <Route exact path="/graphs" exact component={Graphs}/>
-        <Route exact path="/graph2" exact component={cute}></Route>
+        <Route exact path="/graph2" exact component={cute}/>
+        <Route exact path="/motor" exact component={motor}/>
+        <Route exact path="/stats" exact component={stats}/>
       </div>
     </Router>
   );
