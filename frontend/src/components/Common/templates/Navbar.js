@@ -25,7 +25,7 @@ export default class UserNavbar extends Component {
                                 <Link to="/graphs" className="nav-link">Graphs</Link>
                             </li>
                             <li className="navbar-item">
-                                <Link to="/users/appstatus" className="nav-link">Something else</Link>
+                                <Link to="/graph2" className="nav-link">Cute</Link>
                             </li>
                         </ul>
                     </div>
