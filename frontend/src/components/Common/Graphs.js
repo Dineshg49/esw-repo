@@ -2,7 +2,7 @@ import React, { Component, auto, useState } from 'react';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css"
 import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
+import {Paper, TextField} from '@mui/material';
 import axios from 'axios';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis } from 'recharts';
 // const data = [{ name: 'kveinop', uv: 400 }, { name: '13-2-21', uv: 200 }, { name: '14-2-21', uv: 500 }, { name: '12-2-21', uv: 600 }, { name: '12-2-21', uv: 200 },];
@@ -47,11 +47,15 @@ export default class Home extends Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      textFieldValue: '',
+      duration: '1'
+    }
     // this.data = [];
   }
 
 
-  componentDidMount() {
+  componentDidUpdate() {
     function filter_data(ts, months,days,hours) {
 
       var total_minutes  = months*30*24*60 + days*24*60 + hours*60;
@@ -75,7 +79,7 @@ export default class Home extends Component {
 
       var minutes_passed = yyyy*12*30*24*60 + mm*30*24*60 + dd*24*60 + hh*60;
 
-      console.log(total_minutes,minutes_passed)
+      // console.log(total_minutes,minutes_passed)
       if(minutes_passed < total_minutes)
       {
         let ret = String(d) + "/" + String(m) + "/" + String(y) + " " + String(h) + ":" +String(min);
@@ -102,7 +106,13 @@ export default class Home extends Component {
           lvl = parseInt(Number("0x" + data[0]), 10);
 
           let ts = array[i].ct;
-          let timev = filter_data(ts, 1,1,1);
+          let timev;
+          if(this.state.duration == "1")
+            timev = filter_data(ts, parseInt(this.state.textFieldValue),0,0);
+          if(this.state.duration == "2")
+            timev = filter_data(ts, 0, parseInt(this.state.textFieldValue),0);
+          if(this.state.duration == "3")
+            timev = filter_data(ts, 0,0,parseInt(this.state.textFieldValue));
           let value = { name: timev, uv: lvl };
           if (timev !== "-1") {
             data2.push(value);
@@ -114,13 +124,40 @@ export default class Home extends Component {
       ;
   }
 
+  componentDidMount(){
+    this.setState({textFieldValue: ""});
+  }
+
+  handleTextFieldChange = (event) => {
+    //  console.log("sort button", this.state.sortValue)
+    // console.log(eve)
+    this.setState({
+        textFieldValue: event.target.value
+    })
+    }
+  handleSortJobs = (event) => {
+    //  console.log("sort button", this.state.sortValue)
+    this.setState({
+        duration: event.target.value
+    })
+    }
 
   render() {
-
+    // console.log(this.state.duration, this.state.textFieldValue)
     return (
       <div>
         <Paper style={headerStyles}>
           Water Level vs Time
+        </Paper>
+        <Paper style={styles}>
+        <select name="sortValue" onChange={this.handleSortJobs}>
+                        <option value="1">Months</option>
+                        <option value="2">Days</option>
+                        <option value="3">Hours</option>
+        </select>
+        </Paper>
+        <Paper style={styles}>
+          <TextField margin="dense" label="Enter a number" size="small" value={this.state.textFieldValue} onChange={this.handleTextFieldChange} />
         </Paper>
         <Paper style={styles}>
           <LineChart width={600} height={300} data={this.data}>
