@@ -1,7 +1,7 @@
 import React, {Component, auto} from 'react';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+// import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css"
-import Button from '@mui/material/Button';
+// import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import axios from 'axios';
 import { FcCancel } from "react-icons/fc";
@@ -9,7 +9,7 @@ import { FcApproval } from "react-icons/fc";
 import { color } from 'd3-color';
 import { interpolateRgb } from 'd3-interpolate';
 // import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+// import ReactDOM from 'react-dom';
 import LiquidFillGauge from 'react-liquid-gauge';
 import { Toast } from 'bootstrap';
 
@@ -27,8 +27,9 @@ const styles = {
 let y = "Status of Motor: ";
 let x = "Water level in tank: ";
 let resultx = 0;
-let level = 100; 
-let total = 200; 
+let level = 20; 
+let total = 35; 
+let volume = 25;
 
 // function hash(s, M) {
 //     let sum = 0, mul = 1;
@@ -42,6 +43,12 @@ let total = 200;
 //     console.log(Math.abs(sum) % M);
 //     return (Math.abs(sum) % M);
 //   }
+
+let decrypt = [
+    {'u': 0, 'x': 1, 'r': 2, 'p': 3, 'c': 4, 't': 5, 'z': 6, 'v': 7, 'd': 8, 'k': 9, 'h': -1},
+    {'n': 0, 'h': 1, 'e': 2, 'u': 3, 'v': 4, 'y': 5, 'z': 6, 'a': 7, 'p': 8, 'x': 9, 'j': -1},
+    {'g': 0, 's': 1, 'c': 2, 'a': 3, 'j': 4, 'i': 5, 'q': 6, 'v': 7, 'd': 8, 'f': 9, 'k': -1}
+  ]
 
 function hash(s, M) {
     let sum = 0, mul = 1;
@@ -60,8 +67,10 @@ export default class Home extends Component {
         // this.logout = this.logout.bind(this);
     }
     state = {
-      level : 40,
-      value : level*100/total 
+      level : 0,
+      value : level*volume/total,
+      mstatus: 0,
+      x: "Water level in tank: "
     };
     startColor = '#6495ed'; // cornflowerblue
     endColor = '#dc143c'; // crimson
@@ -76,22 +85,37 @@ export default class Home extends Component {
                         // let data = "/EF;2/";
                         // console.log(data);
                         // data = data.substring(1, data.length-1);
+                        // let data = array[i].con;
                         data = data.split(';');
-                        // console.log(data[0]+data[1]);
-                        let hboi = hash(data[0]+data[1], 23);
-                        console.log(hboi);
+                        let water = 0;
+                        let motor = decrypt[data[3]][[data[1][0]]];
+                        // motor = motor-1;
+                        for(let i=0; i<data[0].length; i++)
+                            if(decrypt[data[3]][[data[0][i]]] != -1)
+                            {
+                            water = water*10;
+                            water = water + decrypt[data[3]][[data[0][i]]]
+                            // console.log(decrypt[data[3]][[data[0][i]]]);
+                            // console.log(data[0]);
+                            }
+                        console.log("got", water.toString() + motor.toString());
+                        let hboi = hash(water.toString() + motor.toString(), 50);
+                        console.log(hboi, data);
                         if(hboi == data[2])
-                        {
-                            this.x = this.x + parseInt(Number("0x"+data[0]), 10);
-                            // console.log(parseInt(Number("0x"+data[0]), 10));
-                            // console.log(this.x);
-                            
-                            if(data[1] == "1")
-                                this.y = this.y + "Off";
-                            else
-                                this.y = this.y + "Running";
-                            this.setState({x:"hmm"});
-                        }
+                            console.log("yee");
+                        
+                        this.setState({level: water});
+                        this.setState({value: this.state.level*volume/total});
+                        // console.log("x is ", this.state.level, total, this.state.level*100/total);
+                        // console.log(parseInt(Number("0x"+data[0]), 10));
+                        // console.log(this.x);
+                        
+                        if(motor == 2)
+                            this.setState({mstatus: 0});
+                        else
+                            this.setState({mstatus: 1});
+                        // this.setState({x:"hmm"});
+                        
 
                     //   if(res.data==='Success')
                     //   {
@@ -142,14 +166,17 @@ export default class Home extends Component {
         return (
             <div>    
 				<Paper style={styles}>
-					{x} {level}m
+					{this.state.x} {this.state.level}cm
+				</Paper>
+                <Paper style={styles}>
+					Volume of Water contained: {Math.round(this.state.value)} Litres
 				</Paper>
 				<Paper style={styles}>
 
 					{y}
-          {resultx == 0 ?
+          {this.state.mstatus == 0 ?
           'OFF':'ON'}
-          {resultx == 0 ?
+          {this.state.mstatus == 0 ?
           <FcCancel/>:<FcApproval/>}
 				</Paper>
             
@@ -158,7 +185,7 @@ export default class Home extends Component {
                     style={{ margin: '0 auto' }}
                     width={radius * 2}
                     height={radius * 2}
-                    value={this.state.value}
+                    value={this.state.value*4}
                     percent="%"
                     textSize={1}
                     textOffsetX={0}
@@ -177,7 +204,7 @@ export default class Home extends Component {
                         return (
                             <tspan>
                                 <tspan className="value" style={valueStyle}>{value}</tspan>
-                                <tspan style={percentStyle}>kvein{} </tspan>
+                                <tspan style={percentStyle}>%{} </tspan>
                             </tspan>
                         );
                     }}
