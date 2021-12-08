@@ -6,7 +6,7 @@ import {Paper, TextField} from '@mui/material';
 import axios from 'axios';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis } from 'recharts';
 // const data = [{ name: 'kveinop', uv: 400 }, { name: '13-2-21', uv: 200 }, { name: '14-2-21', uv: 500 }, { name: '12-2-21', uv: 600 }, { name: '12-2-21', uv: 200 },];
-let data = [];
+// let data = [];
 const styles = {
   display: "flex",
   justifyContent: "center",
@@ -16,6 +16,8 @@ const styles = {
   // boxShadow: "4px 4px 4px rgba(0, 0, 0, 0.25)",
   // borderRadius: "25px",
 };
+
+const lmao = [{ name: '1-12-2021', uv: 54 }, { name: '2-12-21', uv: 76 }, { name: '3-12-21', uv: 33 }, { name: '4-12-21', uv: 56 }, { name: '5-12-21', uv: 29 },];
 
 const headerStyles = {
   height: auto,
@@ -48,7 +50,7 @@ export default class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      textFieldValue: '',
+      textFieldValue: '1',
       duration: '1'
     }
     // this.data = [];
@@ -257,20 +259,20 @@ export default class Home extends Component {
     return (
       <div>
         <Paper style={headerStyles}>
-          Water Level vs Time
+        Water Comsumption over selected time intervals
         </Paper>
         <Paper style={styles}>
         <select name="sortValue" onChange={this.handleSortJobs}>
-                        <option value="1">Months</option>
                         <option value="2">Days</option>
+                        <option value="1">Months</option>
                         <option value="3">Hours</option>
         </select>
         </Paper>
         <Paper style={styles}>
-          <TextField margin="dense" label="Enter a number" size="small" value={this.state.textFieldValue} onChange={this.handleTextFieldChange} />
+          <TextField margin="dense" label="1" size="small" value={this.state.textFieldValue} onChange={this.handleTextFieldChange} />
         </Paper>
         <Paper style={styles}>
-          <LineChart width={600} height={300} data={this.data}>
+          <LineChart width={600} height={300} data={lmao}>
             <Line type="monotone" dataKey="uv" stroke="#8884d8" />
             <CartesianGrid stroke="#ccc" />
             <XAxis dataKey="name" />

@@ -64,13 +64,13 @@ export default class Home extends Component {
     constructor(props) {
         super(props);
         // this.logout = this.logout.bind(this);
+        this.state = {
+            level : 40,
+            davg: 49.6,
+            mavg:248
+          //   x: "Water level in tank: "
+          };
     }
-    state = {
-      level : 40,
-      value : level*100/total,
-      mstatus: "Off",
-    //   x: "Water level in tank: "
-    };
     startColor = '#6495ed'; // cornflowerblue
     endColor = '#dc143c'; // crimson
 
@@ -219,6 +219,7 @@ export default class Home extends Component {
                 avg+= grapharray[i].name;
             }
             avg/= grapharray.length;
+            // this.setState({davg: avg});
             this.data = data2;
             this.setState({ data: data2 })
           })
@@ -317,15 +318,10 @@ export default class Home extends Component {
         return (
             <div>    
 				<Paper style={styles}>
-					{this.state.x} {level}m
+					Average Daily Water Usage: {this.state.davg} Litres
 				</Paper>
 				<Paper style={styles}>
-
-					{y}
-          {resultx == 0 ?
-          'OFF':'ON'}
-          {resultx == 0 ?
-          <FcCancel/>:<FcApproval/>}
+					{y} {this.state.mavg} Litres
 				</Paper>
             </div>
         )

@@ -110,9 +110,9 @@ export default class Home extends Component {
                         // console.log(parseInt(Number("0x"+data[0]), 10));
                         // console.log(this.x);
                         
-                        if(motor == 2)
-                            this.setState({mstatus: 0});
-                        else
+                            if(motor == 2)
+                                this.setState({mstatus: 0});
+                            else
                             this.setState({mstatus: 1});
                         // this.setState({x:"hmm"});
                         
